@@ -10,6 +10,10 @@ const router = express.Router();
 
 // TODO: Test routes -- ONCE COMPLETE DELETE THIS TODO
 
+router.get("/", (req, res) => {
+  res.status(200).json({ server: "running" });
+});
+
 // Display all jobs
 
 router.get("/job", (req, res) => {
