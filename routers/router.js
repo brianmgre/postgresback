@@ -32,7 +32,7 @@ router.get("/job", (req, res) => {
 });
 
 router.get("/jobs", (req, res) => {
-  db("jobs")
+  db.any("select * from jobs")
     .then(allJobs => {
       res.status(200).json(allJobs);
     })
