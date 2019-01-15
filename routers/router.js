@@ -79,7 +79,7 @@ router.get("/jobs/:id", (req, res) => {
   db("jobs")
     .where({ users_id: id })
     .first()
-    .join("users", "users_id", "=", "user.id")
+    .join("users", "jobs.users_id", "=", "user.id")
     .then(job => {
       res.status(200).json(job);
     })
