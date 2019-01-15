@@ -74,6 +74,23 @@ router.get("/job/:id", (req, res) => {
     });
 });
 
+router
+  .get("/jobs/:id", (req, res) => {
+    const { id } = req.params;
+    db("jobs")
+      .where({ users_id: id })
+      .join("users", "users_id", "=", "user.id")
+      .then(job => {
+        res.status(200).json(job);
+      });
+  })
+  .catch(error => {
+    res.status(500).json({
+      errorMessage: "The job information could not be retrieved.",
+      error: error
+    });
+  });
+
 // Creating a new job
 router.post("/job", (req, res) => {
   const newJob = { ...req.body };
