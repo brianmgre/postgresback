@@ -8,7 +8,8 @@ const localPgConnection = {
   pass: process.env.DB_PASS
 };
 
-const dbConnection = process.env.DATABASE_URL || localPgConnection;
+const dbConnection =
+  process.env.HEROKU_POSTGRESQL_ORANGE_URL || localPgConnection;
 
 module.exports = {
   development: {
