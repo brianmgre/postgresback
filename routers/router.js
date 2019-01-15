@@ -21,7 +21,7 @@ router.get("/job", (req, res) => {
     .from("jobs")
     .join("users", "jobs.users_id", "users.id")
     .then(allJobs => {
-      res.status(200).json(allJobs);
+      res.status(200).json({ allJobs });
     })
     .catch(error => {
       res.status(501).json({
@@ -34,7 +34,7 @@ router.get("/job", (req, res) => {
 router.get("/jobs", (req, res) => {
   db.any("select * from jobs")
     .then(allJobs => {
-      res.status(200).json(allJobs);
+      res.status(200).json({ allJobs });
     })
     .catch(error => {
       res.status(501).json({
@@ -155,7 +155,7 @@ router.put("/job/:id", (req, res) => {
 router.get("/users", (req, res) => {
   db("users")
     .then(users => {
-      res.status(200).json(users);
+      res.status(200).json({ users });
     })
     .catch(err => {
       res.status(501).json(err);
