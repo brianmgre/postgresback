@@ -10,9 +10,9 @@ exports.up = function(knex, Promise) {
 
     tbl.string("salary").notNullable();
 
-    tbl.string("topSkills", 128);
+    tbl.string("top_skills", 128);
 
-    tbl.string("addSkills", 203);
+    tbl.string("add_skills", 203);
 
     tbl.string("familiar", 128);
 
@@ -22,7 +22,7 @@ exports.up = function(knex, Promise) {
 
     tbl.boolean("active").defaultTo(true);
 
-    tbl.boolean("college_Degree").defaultTo(false);
+    tbl.boolean("college_degree").defaultTo(false);
 
     tbl
       .timestamp("created_at")
