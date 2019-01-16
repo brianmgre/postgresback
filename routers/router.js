@@ -40,7 +40,7 @@ router.get("/job/:id", (req, res) => {
     .then(job => {
       if (job) {
         db("users")
-          .where({ users_id: id })
+          .where({ id: "jobs.users_id" })
           .first()
           .then(user => {
             job.user = user;
