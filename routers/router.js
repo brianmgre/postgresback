@@ -35,6 +35,7 @@ router.get("/jobs/:id", (req, res) => {
   const { id } = req.params;
   db("jobs")
     .where({ id })
+    .first()
     .from("users")
     .join("jobs", "users.id", "=", "jobs.users_id")
     .then(allJobs => {
@@ -59,6 +60,7 @@ router.get("/job/:id", (req, res) => {
         db("users")
           .where({ id })
           .first()
+          .select("first_name")
           .then(user => {
             job.user = user;
             res.status(200).json(job);
