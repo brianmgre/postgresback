@@ -33,10 +33,10 @@ router.get("/job", (req, res) => {
 
 router.get("/jobs/:id", (req, res) => {
   const { id } = req.params;
-  db("users")
+  db("jobs")
     .where({ id })
-    .from("jobs")
-    .join("users", "jobs.users_id", "users.id")
+    .from("users")
+    .join("jobs", "users.id", "=", "jobs.users_id")
     .then(allJobs => {
       res.status(200).json({ allJobs });
     })
