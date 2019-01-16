@@ -31,19 +31,6 @@ router.get("/job", (req, res) => {
     });
 });
 
-router.get("/jobs", (req, res) => {
-  db.any("select * from jobs")
-    .then(allJobs => {
-      res.status(200).json({ allJobs });
-    })
-    .catch(error => {
-      res.status(501).json({
-        errorMessage: "The jobs information could not be retrieved.",
-        error: error
-      });
-    });
-});
-
 // Display one job
 router.get("/job/:id", (req, res) => {
   const { id } = req.params;
@@ -53,7 +40,7 @@ router.get("/job/:id", (req, res) => {
     .then(job => {
       if (job) {
         db("users")
-          .where({ id })
+          .where({ users_id: id })
           .first()
           .then(user => {
             job.user = user;
