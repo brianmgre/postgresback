@@ -31,24 +31,6 @@ router.get("/job", (req, res) => {
     });
 });
 
-router.get("/jobs/:id", (req, res) => {
-  const { id } = req.params;
-  db("jobs")
-    .where({ id })
-    .first()
-    .from("users")
-    .join("jobs", "users.id", "=", "jobs.users_id")
-    .then(allJobs => {
-      res.status(200).json({ allJobs });
-    })
-    .catch(error => {
-      res.status(501).json({
-        errorMessage: "The jobs information could not be retrieved.",
-        error: error
-      });
-    });
-});
-
 // Display one job
 router.get("/job/:id", (req, res) => {
   const { id } = req.params;
@@ -60,7 +42,18 @@ router.get("/job/:id", (req, res) => {
         db("users")
           .where({ id })
           .first()
-          .select("first_name")
+          .select(
+            "first_name",
+            "last_name",
+            "email",
+            "company_name",
+            "summary",
+            "application_method",
+            "avatar_image",
+            "balance",
+            "created_at",
+            "updated_at"
+          )
           .then(user => {
             job.user = user;
             res.status(200).json(job);
