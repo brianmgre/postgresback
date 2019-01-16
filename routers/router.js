@@ -1,6 +1,4 @@
 const express = require("express");
-// const knexConfig = require("../knexfile");
-// const knex = require("knex");
 
 const db = require("../db/config");
 const router = express.Router();
@@ -10,10 +8,6 @@ const router = express.Router();
 
 // TODO: Test routes -- ONCE COMPLETE DELETE THIS TODO
 
-router.get("/", (req, res) => {
-  res.status(200).json({ server: "running" });
-});
-
 // Display all jobs
 
 router.get("/job", (req, res) => {
@@ -21,7 +15,7 @@ router.get("/job", (req, res) => {
     .from("jobs")
     .join("users", "jobs.users_id", "users.id")
     .then(allJobs => {
-      res.status(200).json({ allJobs });
+      res.status(200).json(allJobs);
     })
     .catch(error => {
       res.status(501).json({
@@ -39,6 +33,7 @@ router.get("/job/:id", (req, res) => {
     .first()
     .then(job => {
       if (job) {
+        console.log(job);
         db("users")
           .where({ id })
           .first()
@@ -50,9 +45,7 @@ router.get("/job/:id", (req, res) => {
             "summary",
             "application_method",
             "avatar_image",
-            "balance",
-            "created_at",
-            "updated_at"
+            "balance"
           )
           .then(user => {
             job.user = user;
@@ -154,7 +147,7 @@ router.put("/job/:id", (req, res) => {
 router.get("/users", (req, res) => {
   db("users")
     .then(users => {
-      res.status(200).json({ users });
+      res.status(200).json(users);
     })
     .catch(err => {
       res.status(501).json(err);
