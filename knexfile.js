@@ -2,10 +2,10 @@
 require("dotenv").config();
 
 const localPgConnection = {
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  pass: process.env.DB_PASS
+  host: "localhost",
+  database: "lambda",
+  user: "postgres",
+  pass: "123"
 };
 
 const dbConnection =
@@ -13,15 +13,13 @@ const dbConnection =
 
 module.exports = {
   development: {
-    client: "sqlite3",
-    connection: {
-      filename: "./db/database.sqlite3"
-    },
+    client: "pg",
+    connection: localPgConnection,
     migrations: {
-      directory: "./db/migrations"
+      directory: __dirname + "/db/migrations"
     },
     seeds: {
-      directory: "./db/seeds"
+      directory: __dirname + "/db/seeds"
     },
     useNullAsDefault: true
   },

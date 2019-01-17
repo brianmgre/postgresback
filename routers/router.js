@@ -1,4 +1,6 @@
 const express = require("express");
+// const knexConfig = require("../knexfile");
+// const knex = require("knex");
 
 const db = require("../db/config");
 const router = express.Router();
@@ -8,6 +10,10 @@ const router = express.Router();
 
 // TODO: Test routes -- ONCE COMPLETE DELETE THIS TODO
 
+router.get("/", (req, res) => {
+  res.status(200).json({ server: "running" });
+});
+
 // Display all jobs
 
 router.get("/job", (req, res) => {
@@ -15,7 +21,7 @@ router.get("/job", (req, res) => {
     .from("jobs")
     .join("users", "jobs.users_id", "users.id")
     .then(allJobs => {
-      res.status(200).json(allJobs);
+      res.status(200).json({ allJobs });
     })
     .catch(error => {
       res.status(501).json({
@@ -33,7 +39,6 @@ router.get("/job/:id", (req, res) => {
     .first()
     .then(job => {
       if (job) {
-        console.log(job);
         db("users")
           .where({ id })
           .first()
@@ -45,7 +50,9 @@ router.get("/job/:id", (req, res) => {
             "summary",
             "application_method",
             "avatar_image",
-            "balance"
+            "balance",
+            "created_at",
+            "updated_at"
           )
           .then(user => {
             job.user = user;
@@ -64,6 +71,26 @@ router.get("/job/:id", (req, res) => {
         error: error
       });
     });
+});
+
+router.get("/jobs/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const jobs = await db("jobs")
+      .where({ "jobs.id": id })
+      .join("users", "jobs.users_id", "=", "users.id");
+    // .select("last_name");
+    if (!jobs.length) {
+      return res.status(400).json({
+        errorMessage: "The job with the specified ID does not exis"
+      });
+    }
+    return res.status(200).json(jobs);
+  } catch (err) {
+    return res
+      .status(501)
+      .json({ errorMessage: "The job information could not be retrieved." });
+  }
 });
 
 // Creating a new job
@@ -147,7 +174,7 @@ router.put("/job/:id", (req, res) => {
 router.get("/users", (req, res) => {
   db("users")
     .then(users => {
-      res.status(200).json(users);
+      res.status(200).json({ users });
     })
     .catch(err => {
       res.status(501).json(err);
