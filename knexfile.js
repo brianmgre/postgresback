@@ -5,7 +5,8 @@ const localPgConnection = {
   host: "localhost",
   database: "lambda",
   user: "postgres",
-  pass: "123"
+  pass: "123",
+  charset: "utf8"
 };
 
 const dbConnection =
@@ -14,7 +15,13 @@ const dbConnection =
 module.exports = {
   development: {
     client: "pg",
-    connection: localPgConnection,
+    connection: {
+      host: "localhost",
+      database: "lambda",
+      user: "process.env.USER",
+      password: "process.env.PASSWORD",
+      charset: "utf8"
+    },
     migrations: {
       directory: __dirname + "/db/migrations"
     },
