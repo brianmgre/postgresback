@@ -217,12 +217,11 @@ router.get("/users/:id", (req, res) => {
 });
 
 //UPDATE user
-router.put("/users/:id", (req, res) => {
+router.put("/user", (req, res) => {
   const changes = req.body;
-  const { id } = req.params;
-
+  const user_uid = changes.user_uid;
   db("users")
-    .where({ id: id })
+    .where({ user_uid })
     .update(changes)
     .then(count => {
       if (count === 0) {
@@ -230,9 +229,7 @@ router.put("/users/:id", (req, res) => {
           .status(404)
           .json({ message: "A user with that ID does not exist." });
       } else {
-        res
-          .status(201)
-          .json({ message: "updated the following amount of users:", count });
+        res.status(201).json(changes);
       }
     })
     .catch(err => {
