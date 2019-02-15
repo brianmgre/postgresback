@@ -1,187 +1,23 @@
 const express = require("express");
-// const knexConfig = require("../knexfile");
-// const knex = require("knex");
 
 const db = require("../db/config");
 const router = express.Router();
 
-//-------------JOB ENDPOINTS-------------------
-// TODO: Need to display a list of all jobs (Get) and Get only one job -- ONCE COMPLETE DELETE THIS TODO
-
-// TODO: Test routes -- ONCE COMPLETE DELETE THIS TODO
-
-router.get("/", (req, res) => {
-  res.status(200).json({ server: "running" });
-});
-
-// Display all jobs
-
-router.get("/job", (req, res) => {
-  db("users")
-    .from("jobs")
-    .join("users", "jobs.users_id", "users.id")
-    .then(allJobs => {
-      res.status(200).json({ allJobs });
-    })
-    .catch(error => {
-      res.status(501).json({
-        errorMessage: "The jobs information could not be retrieved.",
-        error: error
-      });
-    });
-});
-
-// Display one job
-router.get("/job/:id", (req, res) => {
-  const { id } = req.params;
-  db("jobs")
-    .where({ id })
-    .first()
-    .then(job => {
-      if (job) {
-        db("users")
-          .where({ id })
-          .first()
-          .select(
-            "first_name",
-            "last_name",
-            "email",
-            "company_name",
-            "summary",
-            "application_method",
-            "avatar_image",
-            "balance",
-            "created_at",
-            "updated_at"
-          )
-          .then(user => {
-            job.user = user;
-            res.status(200).json(job);
-          });
-      } else {
-        res.status(404).json({
-          errorMessage: "The job with the specified ID does not exist.",
-          error: error
-        });
-      }
-    })
-    .catch(error => {
-      res.status(500).json({
-        errorMessage: "The job information could not be retrieved.",
-        error: error
-      });
-    });
-});
-
-router.get("/jobs/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const jobs = await db("jobs")
-      .where({ "jobs.id": id })
-      .join("users", "jobs.users_id", "=", "users.id");
-    // .select("last_name");
-    if (!jobs.length) {
-      return res.status(400).json({
-        errorMessage: "The job with the specified ID does not exis"
-      });
-    }
-    return res.status(200).json(jobs);
-  } catch (err) {
-    return res
-      .status(501)
-      .json({ errorMessage: "The job information could not be retrieved." });
-  }
-});
-
-// Creating a new job
-router.post("/job", (req, res) => {
-  const newJob = { ...req.body };
-
-  if (newJob) {
-    db("jobs");
-    insert(newJob)
-      .then(addJob => {
-        res.status(201).json(addJob[0]);
-      })
-      .catch(error => {
-        res.status(500).json({
-          errorMessage: "There was an error adding your job to the database.",
-          error: error
-        });
-      });
-  } else {
-    res.status(400).json({
-      errorMessage:
-        "Please provide the following: Category_Tag, Title, Salary, Top_Skills, Familiar_With, Description, Requirements, Active, Degree_Required for a job to be added."
-    });
-  }
-});
-
-// Delete a job
-router.delete("/job/:id", (req, res) => {
-  const id = req.params.id;
-  findById(Number(id))
-    .remove(id)
-    .then(jobDeleted => {
-      if (jobDeleted) {
-        res.status(200).json({ message: `Job with ID ${id} deleted.` });
-      } else {
-        res.status(404).json({ message: `Job with ID ${id} does not exist.` });
-      }
-    })
-    .catch(error => {
-      res.status(500).json({
-        errorMessage: "Job could not be deleted.",
-        error: error
-      });
-    });
-});
-
-// Update a job
-router.put("/job/:id", (req, res) => {
-  const updateJob = { ...req.body };
-  const id = req.params.id;
-  if (updateJob) {
-    update(`${id}`, updateJob)
-      .then(jobUpdated => {
-        if (jobUpdated) {
-          return findById(Number(`${id}`)); //change depending on what will be returned by db
-        } else {
-          res.status(404).json({
-            message: `Job with specified ID ${id} is invalid.`
-          });
-        }
-      })
-      .then(updateJob => {
-        res.status(200).json(updateJob[0]);
-      })
-      .catch(error => {
-        res.status(500).json({
-          errorMessage: "Job could not be updated.",
-          error: error
-        });
-      });
-  } else {
-    res.status(400).json({
-      errorMessage:
-        "Please provide the following: Category_Tag, Title, Salary, Top_Skills, Familiar_With, Description, Requirements, Active, Degree_Required for a job to be updated."
-    });
-  }
-});
-
 //-------------USER ENDPOINTS-------------------
-//GET all users
+// GET /api/users
+// returns all users in users table
 router.get("/users", (req, res) => {
   db("users")
     .then(users => {
-      res.status(200).json({ users });
+      res.status(200).json(users);
     })
     .catch(err => {
       res.status(501).json(err);
     });
 });
 
-//POST new user
+// POST /api/users
+// create new user in users table
 router.post("/users", (req, res) => {
   const user = req.body;
 
@@ -195,7 +31,8 @@ router.post("/users", (req, res) => {
     });
 });
 
-//GET user by id
+// GET /api/users/:id
+// return user by primary key id
 router.get("/users/:id", (req, res) => {
   const { id } = req.params;
 
@@ -216,7 +53,8 @@ router.get("/users/:id", (req, res) => {
     });
 });
 
-//UPDATE user
+// UPDATE /api/user
+// update user in users table by Firebase ID (user_uid)
 router.put("/user", (req, res) => {
   const changes = req.body;
   const user_uid = changes.user_uid;
@@ -239,6 +77,8 @@ router.put("/user", (req, res) => {
     });
 });
 
+// [DELETE] /api/users/:id
+// delete user in users table by primary key id
 router.delete("/users/:id", (req, res) => {
   const { id } = req.params;
   db("users")
@@ -262,6 +102,8 @@ router.delete("/users/:id", (req, res) => {
     });
 });
 
+// [GET] /api/company/:user_uid
+// returns user in users table by Firebase ID (user_uid)
 router.get("/company/:user_uid", (req, res) => {
   const post = req.params;
   const user_uid = post.user_uid;
@@ -282,7 +124,5 @@ router.get("/company/:user_uid", (req, res) => {
       });
     });
 });
-
-module.exports = router;
 
 module.exports = router;
