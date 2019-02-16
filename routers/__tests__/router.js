@@ -17,3 +17,12 @@ describe("get /job/:id route", () => {
     expect(response.status).toBe(200);
   });
 });
+
+describe("post /job route", () => {
+  it("returns status code 500", async () => {
+    let response = await request(server)
+      .post("/")
+      .send();
+    expect(response.status).toBe(500);
+  });
+});
