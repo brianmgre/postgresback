@@ -5,7 +5,7 @@ const localPgConnection = {
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
-  pass: process.env.DB_PASS
+  password: process.env.DB_PASS
 };
 
 const dbConnection =
