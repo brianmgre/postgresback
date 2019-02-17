@@ -27,36 +27,53 @@ exports.up = function(knex, Promise) {
 
     tbl.string("summary", 500).notNullable();
 
-    // if string is email --> mailto
-    // if string is url --> redirect to new window
-    tbl.string("application_method", 128).notNullable();
+    exports.up = function (knex, Promise) {
+      return knex.schema.createTable("jobs", function (tbl) {
+        // make changes to the table using the tbl object passed as a parameter
 
-    tbl.string("avatar_image", 200);
+        // primary key
+        tbl.increments(); // generate and id field and make it autoincfement and the primary key
 
-    tbl
-      .integer("balance")
-      .notNullable()
-      .defaultTo(0);
+        // other fields
+        tbl.string("title", 255).notNullable();
 
-    tbl
-      .boolean("unlimited")
-      .notNullable()
-      .defaultTo(false);
+        tbl.string("salary").notNullable();
 
-    tbl.timestamp("expiration");
+        tbl.string("top_skills", 128);
 
-    tbl
-      .timestamp("created_at")
-      .defaultTo(knex.raw("now()"))
-      .notNullable();
+        tbl.string("add_skills", 203);
 
-    tbl
-      .timestamp("updated_at")
-      .defaultTo(knex.raw("now()"))
-      .notNullable();
-  });
-};
+        tbl.string("familiar", 128);
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists("users");
-};
+        tbl.string("description", 4000).notNullable();
+
+        tbl.string("requirements", 5000);
+
+        tbl
+          .boolean("active")
+          .notNullable()
+          .defaultTo(true);
+
+        tbl
+          .boolean("college_degree")
+          .notNullable()
+          .defaultTo(false);
+
+        tbl
+          .date("created_at")
+          .defaultTo(knex.raw("now()"))
+          .notNullable();
+
+        //foreign key to users DB
+        tbl
+          .integer("users_id")
+          .unsigned()
+          .references("id")
+          .inTable("users")
+          .notNullable();
+      });
+    };
+
+    exports.down = function (knex, Promise) {
+      return knex.schema.dropTableIfExists("jobs");
+    };
