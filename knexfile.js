@@ -2,11 +2,10 @@
 require("dotenv").config();
 
 const localPgConnection = {
-  host: "localhost",
-  database: "lambda",
-  user: "postgres",
-  pass: "123",
-  charset: "utf8"
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  pass: process.env.DB_PASS
 };
 
 const dbConnection =
@@ -15,13 +14,7 @@ const dbConnection =
 module.exports = {
   development: {
     client: "pg",
-    connection: {
-      host: "localhost",
-      database: "lambda",
-      user: "process.env.USER",
-      password: "process.env.PASSWORD",
-      charset: "utf8"
-    },
+    connection: localPgConnection,
     migrations: {
       directory: __dirname + "/db/migrations"
     },
