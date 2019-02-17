@@ -1,3 +1,5 @@
+// Login table
+// Populated when a user signs up and is authenticated for the first time
 exports.up = function(knex, Promise) {
   return knex.schema.createTable("login", function(tbl) {
     tbl.increments();
